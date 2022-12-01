@@ -1,0 +1,2 @@
+#define DDRC STS_BYTE(0x27)
+#define PORTC STS_BYTE(0x28)
