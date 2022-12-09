@@ -1,6 +1,6 @@
 @echo off
 
-if not exist ../bin mkdir ../bin
+if not exist ..\bin mkdir ..\bin
 
 cls
 
