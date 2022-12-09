@@ -21,6 +21,8 @@
 
 #define UEINTX STS_BYTE(0xE8)
 #define RXSTPI 3
+#define RXOUTI 2
+#define TXINI 0
 
 #define USB_UNINITIALISED 0
 #define USB_ACIVE 1
@@ -51,12 +53,18 @@
 
 #define UEDATX STS_BYTE(0xF1)
 
-typedef unsigned char u8;
-typedef unsigned short u16;
+#define UDINT STS_BYTE(0xE1)
+#define EORSTI 3
+#define SOFI 2
+
+#define UDADDR STS_BYTE(0xE3)
+#define ADDEN 7
+
+#define USB_SET_ADDRESS 0x5
+#define USB_GET_DESCRIPTOR 0x6
+#define SET_CONFIGURATION 0x9
 
 u8 g_usb_status = USB_UNINITIALISED;
-
-#include "interrupt.c"
 
 /*
  * Enable and setup USB (no endpoints, just
@@ -64,6 +72,7 @@ u8 g_usb_status = USB_UNINITIALISED;
  */
 void usb_enable(void) {
   cli();
+
   // Power on USB pads regulator
   UHWCON |= 1 << UVREGE;
 
@@ -83,9 +92,10 @@ void usb_enable(void) {
   // Attach USB
   UDCON &= ~(1 << DETACH);
 
-  // Enable interrupts
+  // Enable USB interrupts
   UDIEN |= (1 << EORSTE) | (1 << SOFE);
   UEIENX |= 1 << RXSTPE;
+
   sei();
 }
 
@@ -103,10 +113,16 @@ void usb_endpoint0(void) {
   UECFG0X = 0;
 
   // Set size, bank bits, and allocate
-  UECFG1X = (0b010 << EPSIZE) | (0b01 << EPBK) | (1 << ALLOC);
+  UECFG1X = (0b010 << EPSIZE) | (0b00 << EPBK) | (1 << ALLOC);
 
-  if (!(UESTA0X & (1 << CFGOK)))
-    return;
+  // Check if endpoint was created successfully
+  if (!(UESTA0X & (1 << CFGOK))) {
+    // TODO Error handler?
+  }
+
+  UERST = 1 << EPEN;
+  UERST = 0;
+  UEIENX |= (1 << RXSTPE);
 }
 
 /*
@@ -116,6 +132,6 @@ void usb_endpoint0(void) {
  */
 void usb_init(void) {
   usb_enable();
-  usb_endpoint0();
 }
 
+#include "interrupt.c"
