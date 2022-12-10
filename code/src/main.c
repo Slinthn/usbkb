@@ -15,6 +15,19 @@ typedef unsigned short u16;
 int main(void) {
   usb_init();
   
+  u8 a = 0, b = 0, c = 0;
+
   while (1) {
+    a++;
+    if (a == 0) {
+      b++;
+      if (b == 0) {
+        c++;
+        if (c == 100) {
+          DDRC |= 0xFF;
+          PORTC |= 0xFF;
+        }
+      }
+    }
   }
 }

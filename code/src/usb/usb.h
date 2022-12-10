@@ -21,6 +21,7 @@
 #define SOFE 2
 
 #define UEINTX STS_BYTE(0xE8)
+#define RWAL 5
 #define RXSTPI 3
 #define RXOUTI 2
 #define TXINI 0

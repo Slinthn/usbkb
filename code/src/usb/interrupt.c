@@ -10,6 +10,23 @@ void __attribute__((signal)) __vector_10(void) {
     // TODO ??
   }
 
+  if (UDINT & (1 << SOFI) && g_usb_status) {
+    UENUM = 3;  // TODO Endpoint
+
+    if (UEINTX & (1 << RWAL)) {
+
+      UEDATX = 0;
+      UEDATX = 0;
+      UEDATX = 0x9;
+      UEDATX = 0;
+      UEDATX = 0;
+      UEDATX = 0;
+      UEDATX = 0;
+      UEDATX = 0;
+      UEINTX = 0b00111010;
+    }
+  }
+
   UDINT = 0;
 }
 
@@ -33,7 +50,6 @@ void __attribute__((signal)) __vector_11(void) {
   packet.index |= UEDATX << 8;
   packet.length = UEDATX;
   packet.length |= UEDATX << 8;
-
 
   UEINTX &= ~((1 << RXSTPI) | (1 << RXOUTI) | (1 << TXINI));
 
