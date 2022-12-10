@@ -1,6 +1,8 @@
 #include "usb.h"
 
+
 u8 g_usb_status = USB_UNINITIALISED;
+
 
 /*
  * Enable and setup USB (no endpoints, just
@@ -35,6 +37,7 @@ void usb_enable(void) {
   sei();
 }
 
+
 /*
  * Enable endpoint 0 (control endpoint, obligatory, as per specification).
  */
@@ -61,6 +64,7 @@ void usb_endpoint0(void) {
   UEIENX |= (1 << RXSTPE);
 }
 
+
 /*
  * Call this function to initalise USB in its entirety.
  * Later, interrupts will be triggered, in which
@@ -69,5 +73,6 @@ void usb_endpoint0(void) {
 void usb_init(void) {
   usb_enable();
 }
+
 
 #include "interrupt.c"

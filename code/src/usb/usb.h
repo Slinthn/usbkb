@@ -29,6 +29,7 @@
 #define USB_ACIVE 1
 
 #define UECONX STS_BYTE(0xEB)
+#define STALLRQ 5
 #define EPEN 0
 
 #define UENUM STS_BYTE(0xE9)
@@ -65,7 +66,8 @@
 #define USB_SET_ADDRESS 0x5
 #define USB_GET_DESCRIPTOR 0x6
 #define USB_SET_CONFIGURATION 0x9
-
+#define USB_GET_CONFIGURATION 0x8
+#define USB_GET_STATUS 0
 
 // USB SETUP packet structures
 typedef struct usb_setup_packet {
