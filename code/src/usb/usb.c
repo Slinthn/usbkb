@@ -2,9 +2,6 @@
 #include "descriptors.c"
 
 
-u8 g_usb_status = USB_UNINITIALISED;
-
-
 /*
  * Enable and setup USB (no endpoints, just
  * allow USB detection by host)
@@ -130,7 +127,6 @@ void usb_setup_descriptor(usb_setup_packet packet) {
   }
 
   while (data_size) {
-    // Wait until can write
     usb_bank_wait();
 
     u8 transmit_size = data_size;
@@ -149,16 +145,13 @@ void usb_setup_descriptor(usb_setup_packet packet) {
 }
 
 
-
 /*
  * Parse SETUP set configuration packets
  */
 void usb_setup_set_packet(usb_setup_packet packet) {
-  g_usb_status = packet.value;
-  
   UEINTX &= ~(1 << TXINI);
 
-  UENUM = 3;  // TODO keyboard enpoint
+  UENUM = USB_KEYBOARD_ENDPOINT;
   UECONX = 1;
   UECFG0X = 0b11000001;
   UECFG1X = 0b00000110;
@@ -195,7 +188,7 @@ void usb_setup_get_status(void) {
  * Send single key press
  */
 void usb_send_key(u8 key) {
-  UENUM = 3;  // TODO keyboard endpoint
+  UENUM = USB_KEYBOARD_ENDPOINT;
   UEDATX = 0;
   UEDATX = 0;
   UEDATX = key;
@@ -205,6 +198,64 @@ void usb_send_key(u8 key) {
   UEDATX = 0;
   UEDATX = 0;
   UEINTX = 0b00111010;
+}
+
+
+/*
+ * Send 6 key press
+ */
+void usb_send_keys(u8 keylist[6]) {
+  UENUM = USB_KEYBOARD_ENDPOINT;
+  UEDATX = 0;
+  UEDATX = 0;
+  for (u8 i = 0; i < 6; i++) {  // TODO hardcoded 6?
+    UEDATX = keylist[i];
+  }
+  UEINTX = 0b00111010;
+}
+
+
+/*
+ * Adds a key to the key list
+ */
+u8 usb_add_key(u8 keylist[6], u8 key) {  // TODO hardcoded 6?
+  for (u8 i = 0; i < 6; i++) {
+    if (!keylist[i]) {
+      keylist[i] = key;
+      return i;
+    }
+  }
+
+  return 0xFF;
+}
+
+
+/*
+ * Removes a key from the key list
+ */
+u8 usb_remove_key(u8 keylist[6], u8 key) {  // TODO hardcoded 6?
+  for (u8 i = 0; i < 6; i++) {
+    if (keylist[i] == key) {
+      keylist[i] = 0;
+      return i;
+    }
+  }
+  
+  return 0xFF;
+}
+
+
+/*
+ * Checks whether a key is in the keylist
+ */
+u8 usb_check_key(u8 keylist[6], u8 key) {  // TODO hardcoded 6?
+  for (u8 i = 0; i < 6; i++) {
+    if (keylist[i] == key) {
+      return i;
+    }
+  }
+  
+  return 0xFF;
 }
 
 

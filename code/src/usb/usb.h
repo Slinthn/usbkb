@@ -1,68 +1,3 @@
-// Defines for USB registers (located in SRAM)
-#define USBCON STS_BYTE(0xD8)
-#define FRZCLK 5
-#define OTGPADE 4
-
-#define PLLCSR STS_BYTE(0x49)
-#define USBE 7
-#define PINDIV 4
-#define PLLE 1
-#define PLOCK 0
-
-#define UDCON STS_BYTE(0xE0)
-#define LSM 2
-#define DETACH 0
-
-#define UHWCON STS_BYTE(0xD7)
-#define UVREGE 0
-
-#define UDIEN STS_BYTE(0xE2)
-#define EORSTE 3
-#define SOFE 2
-
-#define UEINTX STS_BYTE(0xE8)
-#define RWAL 5
-#define RXSTPI 3
-#define RXOUTI 2
-#define TXINI 0
-
-#define USB_UNINITIALISED 0
-#define USB_ACIVE 1
-
-#define UECONX STS_BYTE(0xEB)
-#define STALLRQ 5
-#define EPEN 0
-
-#define UENUM STS_BYTE(0xE9)
-#define EPNUM 0
-
-#define UECFG0X STS_BYTE(0xEC)
-#define EPTYPE 6
-#define EPDIR 0
-
-#define UECFG1X STS_BYTE(0xED)
-#define EPSIZE 4
-#define EPBK 2
-#define ALLOC 1
-
-#define UESTA0X STS_BYTE(0xEE)
-#define CFGOK 7
-
-#define UERST STS_BYTE(0xEA)
-#define EPRST 0
-
-#define UEIENX STS_BYTE(0xF0)
-#define RXSTPE 3
-
-#define UEDATX STS_BYTE(0xF1)
-
-#define UDINT STS_BYTE(0xE1)
-#define EORSTI 3
-#define SOFI 2
-
-#define UDADDR STS_BYTE(0xE3)
-#define ADDEN 7
-
 // USB SETUP packet types
 #define USB_SET_ADDRESS 0x5
 #define USB_GET_DESCRIPTOR 0x6
@@ -82,6 +17,27 @@
 #define USB_CONFIGURATION_DESCRIPTOR 0x200
 #define USB_HID_DESCRIPTOR 0x2100
 #define USB_KEYBOARD_REPORT_DESCRIPTOR 0x2200
+
+#define USB_KEYBOARD_ENDPOINT 3
+
+#define USB_VERSION 0x200  // Version 2.0
+
+#define USB_DESCRIPTOR_TYPE_DEVICE 0x1
+#define USB_DESCRIPTOR_TYPE_CONFIGURATION 0x2
+#define USB_DESCRIPTOR_TYPE_INTERFACE 0x4
+#define USB_DESCRIPTOR_TYPE_HID 0x21
+#define USB_DESCRIPTOR_TYPE_ENDPOINT 0x5
+#define USB_VERSION_HID 0x101  // Version 1.01
+#define USB_HID_CLASSCODE 0x3
+#define USB_BOOT_INTERFACE_SUBCLASS 0x1
+#define USB_PROTOCOL_KEYBOARD 0x1
+#define USB_CLASS_DESCRIPTOR_TYPE_REPORT 0x22
+
+#define USB_CONFIGURATION_BUS_POWERED (1 << 7)
+#define USB_CONFIGURATION_SELF_POWERED (1 << 6)
+
+#define USB_COUNTRYCODE_NONE 0
+#define USB_CONTROL_ENDPOINT_IN (1 << 7)
 
 // USB SETUP packet structures
 typedef struct usb_setup_packet {

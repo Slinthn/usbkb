@@ -37,35 +37,31 @@ void __attribute__((signal)) __vector_11(void) {
   // Handshake any possible interrupts
   UEINTX &= ~((1 << RXSTPI) | (1 << RXOUTI) | (1 << TXINI));
 
-  static u8 idle_value = 0;  // TODO global variable?
-  static u8 keyboard_protocol = 0;  // TODO global var
+  if ((packet.request_type | ~0b00100001) == 0xFF) {  // TODO
+    if (packet.request_type & (1 << 7)) {  // TODO
+      usb_bank_wait();
 
-  if (packet.request_type == 0b10100001) {  // TODO 
-    usb_bank_wait();
+      switch (packet.request) {
+      case USB_ENDPOINT_GET_REPORT: {
+        for (u8 i = 0; i < 8; i++) {
+          UEDATX = 0;
+        }
+      } break;
 
-    switch (packet.request) {
-    case USB_ENDPOINT_GET_REPORT: {
-      for (u8 i = 0; i < 8; i++) {
+      case USB_ENDPOINT_GET_IDLE:
+      case USB_ENDPOINT_GET_PROTOCOL: {
         UEDATX = 0;
+      } break;
+
+      default: {
+        usb_invalid_packet();
+      } break;
       }
-    } break;
-
-    case USB_ENDPOINT_GET_IDLE: {
-      UEDATX = idle_value;
-    } break;
-
-    case USB_ENDPOINT_GET_PROTOCOL: {
-      UEDATX = keyboard_protocol;
-    } break;
-
-    default: {
+      
+      UEINTX &= ~(1 << TXINI);
+    } else {
       usb_invalid_packet();
-    } break;
     }
-    
-    UEINTX &= ~(1 << TXINI);
-  } else if (packet.request_type == 0b00100001) {  // TODO 
-    usb_invalid_packet();
   } else {
     switch (packet.request) {
     case USB_GET_DESCRIPTOR: {
@@ -88,5 +84,29 @@ void __attribute__((signal)) __vector_11(void) {
       usb_invalid_packet();
     } break;
     }
+  }
+}
+
+
+/*
+ * Test INT0
+ */
+void __attribute__((signal)) __vector_1(void) {
+
+
+    PORTB ^= (1 << 5);
+return;
+  if (usb_check_key(g_keys, 0x8) == 0xFF) {
+    usb_add_key(g_keys, 0x8);
+    PORTB |= 1 << 5;
+  } else {
+    usb_remove_key(g_keys, 0x8);
+    PORTB &= ~(1 << 5);
+    g_keys[0] = 0;
+    g_keys[1] = 0;
+    g_keys[2] = 0;
+    g_keys[3] = 0;
+    g_keys[4] = 0;
+    g_keys[5] = 0;
   }
 }
