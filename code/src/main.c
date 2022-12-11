@@ -1,10 +1,5 @@
 #define STS_BYTE(x) (*((u8 *)x))  // Used for AVR STS instruction
 
-#define VECTOR(X) __vector_ ## X
-
-#define INTERRUPT(vector) __attribute__((signal, used)) void vector(void)
-
-
 typedef unsigned char u8;
 typedef unsigned short u16;
 
@@ -14,20 +9,24 @@ typedef unsigned short u16;
 
 int main(void) {
   usb_init();
-  
+
+  DDRB = ~0b01000000;
+  PORTB = 0b01000000;
+
   u8 a = 0, b = 0, c = 0;
 
   while (1) {
-    a++;
-    if (a == 0) {
-      b++;
-      if (b == 0) {
-        c++;
-        if (c == 100) {
-          DDRC |= 0xFF;
-          PORTC |= 0xFF;
+    if (!(a++))
+      if (!(b++)) {
+        if (c++ == 5) {
+          c = 0;
+          PORTB ^= 1 << 5;
+          if (UEINTX & (1 << RWAL) && g_usb_status && PINB & 0b01000000) {
+            usb_send_key(0x8);
+          } else {
+            usb_send_key(0);
+          }
         }
-      }
     }
   }
 }

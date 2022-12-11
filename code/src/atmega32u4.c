@@ -1,2 +1,20 @@
+#define PINB STS_BYTE(0x23)
+#define DDRB STS_BYTE(0x24)
+#define PORTB STS_BYTE(0x25)
+
+#define PINC STS_BYTE(0x26)
 #define DDRC STS_BYTE(0x27)
 #define PORTC STS_BYTE(0x28)
+
+
+#define PIND STS_BYTE(0x29)
+#define DDRD STS_BYTE(0x2A)
+#define PORTD STS_BYTE(0x2B)
+
+#define PINE STS_BYTE(0x2C)
+#define DDRE STS_BYTE(0x2D)
+#define PORTE STS_BYTE(0x2E)
+
+#define PINF STS_BYTE(0x2F)
+#define DDRF STS_BYTE(0x30)
+#define PORTF STS_BYTE(0x31)

@@ -1,4 +1,4 @@
-u8 bytes[] = {
+u8 keyboard_report_descriptor[] = {
   0x05, 0x01,
   0x09, 0x06,
   0xA1, 0x01,
@@ -79,7 +79,7 @@ usb_complete_descriptor complete_descriptor = {
   .hid_descriptor.country_code = 0,
   .hid_descriptor.num_descriptors = 0x1,
   .hid_descriptor.report_descriptor_type = 0x22,  // TODO check
-  .hid_descriptor.descriptor_length = sizeof(bytes),  // TODO check
+  .hid_descriptor.descriptor_length = sizeof(keyboard_report_descriptor),  // TODO check
 
   .endpoint_descriptor.length = sizeof(usb_endpoint_descriptor),
   .endpoint_descriptor.descriptor_type = 0x5,  // TODO
