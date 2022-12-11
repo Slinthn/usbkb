@@ -202,13 +202,27 @@ void usb_send_key(u8 key) {
 
 
 /*
- * Send 6 key press
+ * Checks whether a key is in the keylist
  */
-void usb_send_keys(u8 keylist[6]) {
+u8 usb_check_key(u8 keylist[USB_HID_MAX_KEYS], u8 key) {
+  for (u8 i = 0; i < USB_HID_MAX_KEYS; i++) {
+    if (keylist[i] == key) {
+      return i;
+    }
+  }
+  
+  return 0xFF;
+}
+
+
+/*
+ * Send USB_HID_MAX_KEYS key presses
+ */
+void usb_send_keys(u8 keylist[USB_HID_MAX_KEYS]) {
   UENUM = USB_KEYBOARD_ENDPOINT;
   UEDATX = 0;
   UEDATX = 0;
-  for (u8 i = 0; i < 6; i++) {  // TODO hardcoded 6?
+  for (u8 i = 0; i < USB_HID_MAX_KEYS; i++) {
     UEDATX = keylist[i];
   }
   UEINTX = 0b00111010;
@@ -218,8 +232,12 @@ void usb_send_keys(u8 keylist[6]) {
 /*
  * Adds a key to the key list
  */
-u8 usb_add_key(u8 keylist[6], u8 key) {  // TODO hardcoded 6?
-  for (u8 i = 0; i < 6; i++) {
+u8 usb_add_key(u8 keylist[USB_HID_MAX_KEYS], u8 key) {
+  if (usb_check_key(keylist, key) != 0xFF) {
+    return 0xFF;
+  }
+
+  for (u8 i = 0; i < USB_HID_MAX_KEYS; i++) {
     if (!keylist[i]) {
       keylist[i] = key;
       return i;
@@ -233,29 +251,13 @@ u8 usb_add_key(u8 keylist[6], u8 key) {  // TODO hardcoded 6?
 /*
  * Removes a key from the key list
  */
-u8 usb_remove_key(u8 keylist[6], u8 key) {  // TODO hardcoded 6?
-  for (u8 i = 0; i < 6; i++) {
-    if (keylist[i] == key) {
-      keylist[i] = 0;
-      return i;
-    }
+u8 usb_remove_key(u8 keylist[USB_HID_MAX_KEYS], u8 key) {
+  u8 index = usb_check_key(keylist, key);
+  if (index != 0xFF) {
+    keylist[index] = 0;
   }
-  
-  return 0xFF;
-}
 
-
-/*
- * Checks whether a key is in the keylist
- */
-u8 usb_check_key(u8 keylist[6], u8 key) {  // TODO hardcoded 6?
-  for (u8 i = 0; i < 6; i++) {
-    if (keylist[i] == key) {
-      return i;
-    }
-  }
-  
-  return 0xFF;
+  return index;
 }
 
 

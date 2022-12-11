@@ -2,13 +2,14 @@
  * USB general interrupt
  */
 void __attribute__((signal)) __vector_10(void) {
+  // On reset, setup endpoint 0
   if (UDINT & (1 << EORSTI)) {
     usb_endpoint0();
   }
 
-  // NOTE Do nothing for a Start of Frame packet
-
   UDINT = 0;
+  
+  // NOTE Do nothing for a Start of Frame packet
 }
 
 
@@ -37,8 +38,11 @@ void __attribute__((signal)) __vector_11(void) {
   // Handshake any possible interrupts
   UEINTX &= ~((1 << RXSTPI) | (1 << RXOUTI) | (1 << TXINI));
 
-  if ((packet.request_type | ~0b00100001) == 0xFF) {  // TODO
-    if (packet.request_type & (1 << 7)) {  // TODO
+  // Check if request is an interface
+  if ((packet.request_type | ~(USB_TYPE_CLASS | USB_RECIPIENT_INTERFACE)) == 0xFF) {
+    // Check if device is required to send data to host
+    // NOTE We will not send keyboard strokes here
+    if (packet.request_type & USB_TRANSFER_DEVICE_TO_HOST) {
       usb_bank_wait();
 
       switch (packet.request) {
@@ -60,9 +64,13 @@ void __attribute__((signal)) __vector_11(void) {
       
       UEINTX &= ~(1 << TXINI);
     } else {
+      // Since host to device requests are optional,
+      // we will opt to not implement them
       usb_invalid_packet();
     }
   } else {
+    // This packet was not destined for an interface, but rather
+    // the configuration as a whole
     switch (packet.request) {
     case USB_GET_DESCRIPTOR: {
       usb_setup_descriptor(packet);
@@ -84,29 +92,5 @@ void __attribute__((signal)) __vector_11(void) {
       usb_invalid_packet();
     } break;
     }
-  }
-}
-
-
-/*
- * Test INT0
- */
-void __attribute__((signal)) __vector_1(void) {
-
-
-    PORTB ^= (1 << 5);
-return;
-  if (usb_check_key(g_keys, 0x8) == 0xFF) {
-    usb_add_key(g_keys, 0x8);
-    PORTB |= 1 << 5;
-  } else {
-    usb_remove_key(g_keys, 0x8);
-    PORTB &= ~(1 << 5);
-    g_keys[0] = 0;
-    g_keys[1] = 0;
-    g_keys[2] = 0;
-    g_keys[3] = 0;
-    g_keys[4] = 0;
-    g_keys[5] = 0;
   }
 }

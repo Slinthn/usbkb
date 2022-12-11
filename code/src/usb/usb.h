@@ -39,6 +39,14 @@
 #define USB_COUNTRYCODE_NONE 0
 #define USB_CONTROL_ENDPOINT_IN (1 << 7)
 
+#define USB_HID_MAX_KEYS 6
+
+#define USB_TYPE_CLASS (0b1 << 5)
+#define USB_RECIPIENT_INTERFACE (0b1 << 0)
+
+
+#define USB_TRANSFER_DEVICE_TO_HOST (1 << 7)
+
 // USB SETUP packet structures
 typedef struct usb_setup_packet {
   u8 request_type;

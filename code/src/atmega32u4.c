@@ -1,3 +1,9 @@
+/*
+ * ATMEGA32U4 constants and defines
+ */
+
+#define STS_BYTE(x) (*((u8 *)x))  // Used as STS instruction
+
 #define PINB STS_BYTE(0x23)
 #define DDRB STS_BYTE(0x24)
 #define PORTB STS_BYTE(0x25)

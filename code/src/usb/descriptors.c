@@ -1,3 +1,4 @@
+// TODO This is a collection. Comment?
 u8 keyboard_report_descriptor[] = {
   0x05, 0x01,
   0x09, 0x06,
@@ -53,6 +54,7 @@ usb_device_descriptor device_descriptor = {
 
 
 usb_complete_descriptor complete_descriptor = {
+  // Configuration descriptor
   .configuration_descriptor.length = sizeof(usb_configuration_descriptor),
   .configuration_descriptor.descriptor_type = USB_DESCRIPTOR_TYPE_CONFIGURATION,
   .configuration_descriptor.total_length = sizeof(usb_configuration_descriptor)
@@ -63,6 +65,7 @@ usb_complete_descriptor complete_descriptor = {
   .configuration_descriptor.attributes = USB_CONFIGURATION_BUS_POWERED,
   .configuration_descriptor.max_power = 1,  // 1 * 2mA
 
+  // Interface descriptor
   .interface_descriptor.length = sizeof(usb_interface_descriptor),
   .interface_descriptor.descriptor_type = USB_DESCRIPTOR_TYPE_INTERFACE,
   .interface_descriptor.interface_number = 0,
@@ -73,6 +76,7 @@ usb_complete_descriptor complete_descriptor = {
   .interface_descriptor.interface_protocol = USB_PROTOCOL_KEYBOARD,
   .interface_descriptor.interface = 0,
 
+  // HID descriptor
   .hid_descriptor.length = sizeof(usb_hid_descriptor),
   .hid_descriptor.descriptor_type = USB_DESCRIPTOR_TYPE_HID,
   .hid_descriptor.hid = USB_VERSION_HID,
@@ -81,6 +85,7 @@ usb_complete_descriptor complete_descriptor = {
   .hid_descriptor.report_descriptor_type = USB_CLASS_DESCRIPTOR_TYPE_REPORT,
   .hid_descriptor.descriptor_length = sizeof(keyboard_report_descriptor),
 
+  // Endpoint descriptor
   .endpoint_descriptor.length = sizeof(usb_endpoint_descriptor),
   .endpoint_descriptor.descriptor_type = USB_DESCRIPTOR_TYPE_ENDPOINT,
   .endpoint_descriptor.endpoint_address = USB_CONTROL_ENDPOINT_IN | USB_KEYBOARD_ENDPOINT,
