@@ -10,27 +10,27 @@ void usb_enable(void) {
   cli();
 
   // Power on USB pads regulator
-  UHWCON |= 1 << UVREGE;
+  STS(UHWCON) |= 1 << UVREGE;
 
   // Configure PLL interface and enable
-  PLLCSR |= (1 << PINDIV) | (1 << PLLE);
+  STS(PLLCSR) |= (1 << PINDIV) | (1 << PLLE);
 
   // Wait for PLL to lock
-  while (!(PLLCSR & (1 << PLOCK)));
+  while (!(STS(PLLCSR) & (1 << PLOCK)));
 
   // Enable USB interface, USB power pads, and disable clock freeze
-  USBCON |= (1 << OTGPADE) | (1 << USBE);
-  USBCON &= ~(1 << FRZCLK);
+  STS(USBCON) |= (1 << OTGPADE) | (1 << USBE);
+  STS(USBCON) &= ~(1 << FRZCLK);
 
   // Set high speed mode
-  UDCON &= ~(1 << LSM);
+  STS(UDCON) &= ~(1 << LSM);
 
   // Attach USB
-  UDCON &= ~(1 << DETACH);
+  STS(UDCON) &= ~(1 << DETACH);
 
   // Enable USB interrupts
-  UDIEN |= (1 << EORSTE) | (1 << SOFE);
-  UEIENX |= 1 << RXSTPE;
+  STS(UDIEN) |= (1 << EORSTE) | (1 << SOFE);
+  STS(UEIENX) |= 1 << RXSTPE;
 
   sei();
 }
@@ -41,25 +41,25 @@ void usb_enable(void) {
  */
 void usb_endpoint0(void) {
   // Select endpoint 0
-  UENUM = 0;
+  STS(UENUM) = 0;
 
   // Activate endpoint
-  UECONX |= 1 << EPEN;
+  STS(UECONX) |= 1 << EPEN;
 
   // Configure endpoint as type control and direction out
-  UECFG0X = 0;
+  STS(UECFG0X) = 0;
 
   // Set size, bank bits, and allocate
-  UECFG1X = (0b010 << EPSIZE) | (0b00 << EPBK) | (1 << ALLOC);
+  STS(UECFG1X) = (0b010 << EPSIZE) | (0b00 << EPBK) | (1 << ALLOC);
 
   // Check if endpoint was created successfully
-  if (!(UESTA0X & (1 << CFGOK))) {
+  if (!(STS(UESTA0X) & (1 << CFGOK))) {
     // TODO Error handler?
   }
 
-  UERST = 1 << EPEN;
-  UERST = 0;
-  UEIENX |= (1 << RXSTPE);
+  STS(UERST) = 1 << EPEN;
+  STS(UERST) = 0;
+  STS(UEIENX) |= 1 << RXSTPE;
 }
 
 
@@ -77,7 +77,7 @@ void usb_init(void) {
  * Call when an invalid packet has been sent by the host
  */
 void usb_invalid_packet(void) {
-  UECONX |= (1 << STALLRQ) | (1 << EPEN);
+  STS(UECONX) |= (1 << STALLRQ) | (1 << EPEN);
 }
 
 
@@ -85,7 +85,7 @@ void usb_invalid_packet(void) {
  * Call to stall execution until current bank is free
  */
 void usb_bank_wait(void) {
-  while (!(UEINTX & (1 << TXINI)));
+  while (!(STS(UEINTX) & (1 << TXINI)));
 }
 
 
@@ -135,10 +135,10 @@ void usb_setup_descriptor(usb_setup_packet packet) {
     }
 
     for (u8 i = 0; i < transmit_size; i++) {
-      UEDATX = *data++;
+      STS(UEDATX) = *data++;
     }
 
-    UEINTX &= ~(1 << TXINI);
+    STS(UEINTX) &= ~(1 << TXINI);
 
     data_size -= transmit_size;
   }
@@ -149,14 +149,14 @@ void usb_setup_descriptor(usb_setup_packet packet) {
  * Parse SETUP set configuration packets
  */
 void usb_setup_set_packet(usb_setup_packet packet) {
-  UEINTX &= ~(1 << TXINI);
+  STS(UEINTX) &= ~(1 << TXINI);
 
-  UENUM = USB_KEYBOARD_ENDPOINT;
-  UECONX = 1;
-  UECFG0X = 0b11000001;
-  UECFG1X = 0b00000110;
-  UERST = 0x1E;
-  UERST = 0;
+  STS(UENUM) = USB_KEYBOARD_ENDPOINT;
+  STS(UECONX) = 1;
+  STS(UECFG0X) = 0b11000001;
+  STS(UECFG1X) = 0b00000110;
+  STS(UERST) = 0x1E;
+  STS(UERST) = 0;
 }
 
 
@@ -164,10 +164,10 @@ void usb_setup_set_packet(usb_setup_packet packet) {
  * Parse SETUP set address packets
  */
 void usb_setup_set_address(usb_setup_packet packet) {
-  UEINTX &= ~(1 << TXINI);
+  STS(UEINTX) &= ~(1 << TXINI);
   usb_bank_wait();
 
-  UDADDR = (1 << ADDEN) | packet.value;
+  STS(UDADDR) = (1 << ADDEN) | packet.value;
 }
 
 
@@ -177,10 +177,10 @@ void usb_setup_set_address(usb_setup_packet packet) {
 void usb_setup_get_status(void) {
   usb_bank_wait();
 
-  UEDATX = 0;
-  UEDATX = 0;
+  STS(UEDATX) = 0;
+  STS(UEDATX) = 0;
   
-  UEINTX &= ~(1 << TXINI);
+  STS(UEINTX) &= ~(1 << TXINI);
 }
 
 
@@ -188,16 +188,16 @@ void usb_setup_get_status(void) {
  * Send single key press
  */
 void usb_send_key(u8 key) {
-  UENUM = USB_KEYBOARD_ENDPOINT;
-  UEDATX = 0;
-  UEDATX = 0;
-  UEDATX = key;
-  UEDATX = 0;
-  UEDATX = 0;
-  UEDATX = 0;
-  UEDATX = 0;
-  UEDATX = 0;
-  UEINTX = 0b00111010;
+  STS(UENUM) = USB_KEYBOARD_ENDPOINT;
+  STS(UEDATX) = 0;
+  STS(UEDATX) = 0;
+  STS(UEDATX) = key;
+  STS(UEDATX) = 0;
+  STS(UEDATX) = 0;
+  STS(UEDATX) = 0;
+  STS(UEDATX) = 0;
+  STS(UEDATX) = 0;
+  STS(UEINTX) = 0b00111010;
 }
 
 
@@ -219,13 +219,13 @@ u8 usb_check_key(u8 keylist[USB_HID_MAX_KEYS], u8 key) {
  * Send USB_HID_MAX_KEYS key presses
  */
 void usb_send_keys(u8 keylist[USB_HID_MAX_KEYS]) {
-  UENUM = USB_KEYBOARD_ENDPOINT;
-  UEDATX = 0;
-  UEDATX = 0;
+  STS(UENUM) = USB_KEYBOARD_ENDPOINT;
+  STS(UEDATX) = 0;
+  STS(UEDATX) = 0;
   for (u8 i = 0; i < USB_HID_MAX_KEYS; i++) {
-    UEDATX = keylist[i];
+    STS(UEDATX) = keylist[i];
   }
-  UEINTX = 0b00111010;
+  STS(UEINTX) = 0b00111010;
 }
 
 
@@ -248,8 +248,8 @@ u8 usb_add_key(u8 keylist[USB_HID_MAX_KEYS], u8 key) {
 }
 
 
-/*
- * Removes a key from the key list
+/**
+ * DESCRIPTION: Removes a key from the key list
  */
 u8 usb_remove_key(u8 keylist[USB_HID_MAX_KEYS], u8 key) {
   u8 index = usb_check_key(keylist, key);
@@ -261,4 +261,12 @@ u8 usb_remove_key(u8 keylist[USB_HID_MAX_KEYS], u8 key) {
 }
 
 
+/**
+ * DESCRIPTOION: Removes a key from the key list
+ */
+void usb_reset_keys(u8 keylist[USB_HID_MAX_KEYS]) {
+  for (u8 i = 0; i < USB_HID_MAX_KEYS; i++) {
+    keylist[i] = 0;
+  }
+}
 #include "interrupt.c"
