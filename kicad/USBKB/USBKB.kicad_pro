@@ -342,8 +342,12 @@
     }
   },
   "libraries": {
-    "pinned_footprint_libs": [],
-    "pinned_symbol_libs": []
+    "pinned_footprint_libs": [
+      "USBKB"
+    ],
+    "pinned_symbol_libs": [
+      "USBKB"
+    ]
   },
   "meta": {
     "filename": "USBKB.kicad_pro",
