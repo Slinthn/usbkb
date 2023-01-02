@@ -1,4 +1,4 @@
-code/bin/
-kicad/USBKB/USBKB.bak
-kicad/USBKB/USBKB-backups/
-kicad/USBKB/fp-info-cache
+microcontroller/bin/
+design/pcb/USBKB.bak
+design/pcb/USBKB-backups/
+design/pcb/fp-info-cache
