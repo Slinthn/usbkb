@@ -14,23 +14,20 @@
     </header>
     <main>
       <div id="banner">
-        
+        <div class="left">
+          <div class="text">
+            <h1>SK1</h1>
+            <p>Check out our new product. The SK1</p>
+            <a href="sk1">View more</a>
+          </div>
+        </div>
+        <div class="right"></div>
       </div>
     </main>
     <footer>
-      <div class="left">
-        <a href="home">Slin</a>
-      </div>
-      <div class="right">
-        <div class="column">
-          <a href="keyboards">Keyboards</a>
-          <a href="home">Arduinos</a>
-        </div>
-        <div class="column">
-          <a href="" class="login-menu">Login</a>
-          <a href="" class="signup-menu">Signup</a>
-        </div>
-      </div>
+      <?php
+      require("../component/footer.php");
+      ?>
     </footer>
   </body>
 </html>
