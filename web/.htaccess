@@ -1,0 +1,22 @@
+RewriteEngine On
+
+# Redirect default to home
+RewriteRule ^$ %{REQUEST_URI}home [R=301,NC,END]
+
+# Pages
+RewriteRule ^home$ page/home.php [NC,END]
+RewriteRule ^keyboards$ page/keyboards.php [NC,END]
+RewriteRule ^login$ page/login.php [NC,END]
+
+# Media
+RewriteRule ^js - [NC,END]
+RewriteRule ^css - [NC,END]
+RewriteRule ^media - [NC,END]
+
+# Client services
+RewriteRule ^service/account/email-checker.php - [NC,END]
+RewriteRule ^service/account/signup.php - [NC,END]
+RewriteRule ^service/account/signup-code.php - [NC,END]
+
+# Deny access to anything else
+RewriteRule .* - [NC,F,END]
