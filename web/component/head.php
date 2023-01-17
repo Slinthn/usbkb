@@ -7,4 +7,4 @@
   href="https://fonts.googleapis.com/css2?family=Bakbak+One">
 <link rel="stylesheet"
 href="https://fonts.googleapis.com/css2?family=Varela+Round">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@900" rel="stylesheet">

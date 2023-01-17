@@ -5,7 +5,7 @@ RewriteRule ^$ %{REQUEST_URI}home [R=301,NC,END]
 
 # Pages
 RewriteRule ^home$ page/home.php [NC,END]
-RewriteRule ^keyboards$ page/keyboards.php [NC,END]
+RewriteRule ^sk1$ page/sk1.php [NC,END]
 RewriteRule ^login$ page/login.php [NC,END]
 
 # Media

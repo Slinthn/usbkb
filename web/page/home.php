@@ -18,7 +18,7 @@
           <div class="text">
             <h1>SK1</h1>
             <p>Check out our new product. The SK1</p>
-            <a href="sk1">View more</a>
+            <a href="sk1" class="button">View more</a>
           </div>
         </div>
         <div class="right"></div>
