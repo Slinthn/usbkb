@@ -97,3 +97,5 @@
 
 #define UDADDR 0xE3
 #define ADDEN 7
+
+#define CLKPR 0x61

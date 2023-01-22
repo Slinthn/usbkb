@@ -63,7 +63,7 @@ usb_complete_descriptor complete_descriptor = {
   .configuration_descriptor.configuration_value = 1,
   .configuration_descriptor.configuration = 0,
   .configuration_descriptor.attributes = USB_CONFIGURATION_BUS_POWERED,
-  .configuration_descriptor.max_power = 1,  // 1 * 2mA
+  .configuration_descriptor.max_power = 40,  // per 2mA
 
   // Interface descriptor
   .interface_descriptor.length = sizeof(usb_interface_descriptor),
