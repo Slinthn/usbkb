@@ -99,3 +99,27 @@
 #define ADDEN 7
 
 #define CLKPR 0x61
+
+#define TCCR0B 0x45
+#define CS00 0
+
+#define TIMSK0 0x6E
+#define OCIE0A 1
+
+#define CLKPR 0x61
+#define CLKPCE 7
+#define CLKPS0 0
+
+#define SPCR 0x4C
+#define SPIE 7
+#define SPE 6
+#define MSTR 4
+
+#define SPSR 0x4D
+#define SPIF 7
+#define SPI2X 0
+
+#define SPDR 0x4E
+
+#define SREG 0x5F
+#define I 7

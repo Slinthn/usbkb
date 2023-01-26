@@ -2,6 +2,6 @@
 
 pushd ..\bin
 
-ipecmd.exe -Fmain.hex -M -TSBUR222474663 -PATMEGA32U4 -ORIISP
+..\build\avrdude -c pickit4_isp -p m32u4 -U flash:w:main.hex:i
 
 popd

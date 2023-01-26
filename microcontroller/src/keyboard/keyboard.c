@@ -1,5 +1,6 @@
 #include "keys.h"
 
+u8 g_keys[USB_HID_MAX_KEYS] = {0};
 
 /**
  * DESCRIPTION: Call this function to initalise the keyboard matrix.

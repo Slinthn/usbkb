@@ -7,7 +7,7 @@
  * allow USB detection by host)
  */
 void usb_enable(void) {
-  cli();
+  CLI;
 
   // Power on USB pads regulator
   STS(UHWCON) |= 1 << UVREGE;
@@ -32,7 +32,7 @@ void usb_enable(void) {
   STS(UDIEN) |= (1 << EORSTE) | (1 << SOFE);
   STS(UEIENX) |= 1 << RXSTPE;
 
-  sei();
+  SEI;
 }
 
 
