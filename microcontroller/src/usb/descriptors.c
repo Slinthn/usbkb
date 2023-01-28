@@ -1,5 +1,10 @@
+/**
+ * @brief USB descriptior constants
+ * 
+ */
+
 // TODO This is a collection. Comment?
-u8 keyboard_report_descriptor[] = {
+uint8_t keyboard_report_descriptor[] = {
   0x05, 0x01,
   0x09, 0x06,
   0xA1, 0x01,
@@ -34,7 +39,6 @@ u8 keyboard_report_descriptor[] = {
   0xC0
 };
 
-
 usb_device_descriptor device_descriptor = {
   .length = sizeof(usb_device_descriptor),
   .descriptor_type = USB_DESCRIPTOR_TYPE_DEVICE,
@@ -51,7 +55,6 @@ usb_device_descriptor device_descriptor = {
   .serial_number = 0,
   .num_configurations = 1
 };
-
 
 usb_complete_descriptor complete_descriptor = {
   // Configuration descriptor
@@ -88,7 +91,9 @@ usb_complete_descriptor complete_descriptor = {
   // Endpoint descriptor
   .endpoint_descriptor.length = sizeof(usb_endpoint_descriptor),
   .endpoint_descriptor.descriptor_type = USB_DESCRIPTOR_TYPE_ENDPOINT,
-  .endpoint_descriptor.endpoint_address = USB_CONTROL_ENDPOINT_IN | USB_KEYBOARD_ENDPOINT,
+  .endpoint_descriptor.endpoint_address = USB_CONTROL_ENDPOINT_IN
+    | USB_KEYBOARD_ENDPOINT,
+
   .endpoint_descriptor.attributes = 0b11,
   .endpoint_descriptor.max_packet_size = 0x8,
   .endpoint_descriptor.interval = 0x1

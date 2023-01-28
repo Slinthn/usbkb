@@ -1,4 +1,8 @@
-// USB SETUP packet types
+/**
+ * @brief USB constants and packets
+ * 
+ */
+
 #define USB_SET_ADDRESS 0x5
 #define USB_GET_DESCRIPTOR 0x6
 #define USB_SET_CONFIGURATION 0x9
@@ -44,92 +48,79 @@
 #define USB_TYPE_CLASS (0b1 << 5)
 #define USB_RECIPIENT_INTERFACE (0b1 << 0)
 
-
 #define USB_TRANSFER_DEVICE_TO_HOST (1 << 7)
 
 // USB SETUP packet structures
 typedef struct usb_setup_packet {
-  u8 request_type;
-  u8 request;
-  u16 value;
-  u16 index;
-  u16 length;
+  uint8_t request_type;
+  uint8_t request;
+  uint16_t value;
+  uint16_t index;
+  uint16_t length;
 } usb_setup_packet;
 
-#pragma pack(push, 1)
 typedef struct usb_device_descriptor {
-  u8 length;
-  u8 descriptor_type;
-  u16 usb;
-  u8 device_class;
-  u8 device_subclass;
-  u8 device_protocol;
-  u8 max_packet_size;
-  u16 id_vendor;
-  u16 id_product;
-  u16 device;
-  u8 manufacturer;
-  u8 product;
-  u8 serial_number;
-  u8 num_configurations;
+  uint8_t length;
+  uint8_t descriptor_type;
+  uint16_t usb;
+  uint8_t device_class;
+  uint8_t device_subclass;
+  uint8_t device_protocol;
+  uint8_t max_packet_size;
+  uint16_t id_vendor;
+  uint16_t id_product;
+  uint16_t device;
+  uint8_t manufacturer;
+  uint8_t product;
+  uint8_t serial_number;
+  uint8_t num_configurations;
 } usb_device_descriptor;
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 typedef struct usb_configuration_descriptor {
-  u8 length;
-  u8 descriptor_type;
-  u16 total_length;
-  u8 num_interfaces;
-  u8 configuration_value;
-  u8 configuration;
-  u8 attributes;
-  u8 max_power;
+  uint8_t length;
+  uint8_t descriptor_type;
+  uint16_t total_length;
+  uint8_t num_interfaces;
+  uint8_t configuration_value;
+  uint8_t configuration;
+  uint8_t attributes;
+  uint8_t max_power;
 } usb_configuration_descriptor;
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 typedef struct usb_interface_descriptor {
-  u8 length;
-  u8 descriptor_type;
-  u8 interface_number;
-  u8 alternate_setting;
-  u8 num_endpoints;
-  u8 interface_class;
-  u8 interface_subclass;
-  u8 interface_protocol;
-  u8 interface;
+  uint8_t length;
+  uint8_t descriptor_type;
+  uint8_t interface_number;
+  uint8_t alternate_setting;
+  uint8_t num_endpoints;
+  uint8_t interface_class;
+  uint8_t interface_subclass;
+  uint8_t interface_protocol;
+  uint8_t interface;
 } usb_interface_descriptor;
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 typedef struct usb_endpoint_descriptor {
-  u8 length;
-  u8 descriptor_type;
-  u8 endpoint_address;
-  u8 attributes;
-  u16 max_packet_size;
-  u8 interval;
+  uint8_t length;
+  uint8_t descriptor_type;
+  uint8_t endpoint_address;
+  uint8_t attributes;
+  uint16_t max_packet_size;
+  uint8_t interval;
 } usb_endpoint_descriptor;
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 typedef struct usb_hid_descriptor {
-  u8 length;
-  u8 descriptor_type;
-  u16 hid;
-  u8 country_code;
-  u8 num_descriptors;
-  u8 report_descriptor_type;
-  u16 descriptor_length;
+  uint8_t length;
+  uint8_t descriptor_type;
+  uint16_t hid;
+  uint8_t country_code;
+  uint8_t num_descriptors;
+  uint8_t report_descriptor_type;
+  uint16_t descriptor_length;
 } usb_hid_descriptor;
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 typedef struct usb_complete_descriptor {
   usb_configuration_descriptor configuration_descriptor;
   usb_interface_descriptor interface_descriptor;
   usb_hid_descriptor hid_descriptor;
   usb_endpoint_descriptor endpoint_descriptor;
 } usb_complete_descriptor;
-#pragma pack(pop)

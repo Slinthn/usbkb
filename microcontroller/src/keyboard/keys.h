@@ -1,4 +1,9 @@
 /**
+ * @brief USB scancode constants
+ * 
+ */
+
+/**
  * USB HID Keyboard scan codes as per USB spec 1.11
  * plus some additional codes
  * 

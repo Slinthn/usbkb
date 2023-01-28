@@ -1,43 +1,37 @@
-/*
- * Contains the main entrypoint for the program
+/**
+ * @brief Contains the entrypoint for the process
  */
 
-
-typedef unsigned char u8;
-typedef unsigned short u16;
-
+typedef unsigned char uint8_t;
+typedef unsigned short uint16_t;
 
 #define sizeof_array(x) (sizeof(x) / sizeof((x)[0]))
 
+#include "atmega32u4.h"
 
-#include "assembly.c"
-#include "atmega32u4.c"
 #include "pixel/pixel.c"
+#include "pixel/rgb/pixel_rgb.c"
+
 #include "usb/usb.c"
 
+#include "keyboard/usb_keyboard.c"
 #include "keyboard/keyboard.c"
-
-
-
 
 /**
  * @brief Entrypoint for the ATMEGA32U4
+ * 
  */
 int main(void) {
-  //keyboard_init();
-  //usb_init();
 
-  // LED matrix
-  STS(PORTE) = 0;
-  NOP;
-  STS(DDRE) = 0xff;
+  keyboard_init();
+  usb_init();
 
-  init_pixels();
+  init_pixels_rgbwave();
 
   while (1) {
-    // keyboard_poll();
-    
-    update_pixels();
-    write_pixels(pixels, 60);
+    keyboard_poll();
+
+    update_pixels_rgbwave();
+    write_pixels_rgbwave();
   }
 }

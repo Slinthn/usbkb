@@ -1,8 +1,14 @@
-/*
- * ATMEGA32U4 constants and defines
+/**
+ * @brief ATMEGA32U4 constants and assembly
  */
 
-#define STS(x) (*((u8 *)(u16)(x)))  // Used as STS instruction
+#define STS(x) (*((uint8_t *)(uint16_t)(x)))
+
+#define CLI asm("CLI")
+
+#define SEI asm("SEI")
+
+#define NOP asm("NOP")
 
 #define PINB 0x23
 #define DDRB 0x24
@@ -11,7 +17,6 @@
 #define PINC 0x26
 #define DDRC 0x27
 #define PORTC 0x28
-
 
 #define PIND 0x29
 #define DDRD 0x2A
@@ -33,7 +38,6 @@
 
 #define EIMSK 0x3D
 
-// DEFINEs for USB registers
 #define USBCON 0xD8
 #define FRZCLK 5
 #define OTGPADE 4
@@ -123,3 +127,34 @@
 
 #define SREG 0x5F
 #define I 7
+
+#define TCCR0A 0x44
+#define COM0A1 7
+#define COM0A0 6
+#define WGM01 1
+#define WGM00 0
+
+#define TCCR0B 0x45
+#define WGM02 3
+#define CS02 2
+#define CS01 1
+#define CS00 0
+
+#define OCR0A 0x47
+
+#define TCCR1A 0x80
+#define COM1A1 7
+#define COM1A0 6
+#define WGM11 1
+#define WGM10 0
+
+#define TCCR1B 0x81
+#define CS12 2
+#define CS11 1
+#define CS10 0
+
+#define OCR1AH 0x89
+#define OCR1AL 0x88
+
+#define TCNT1H 0x85
+#define TCNT1L 0x84

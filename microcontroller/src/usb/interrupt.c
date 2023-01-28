@@ -1,23 +1,32 @@
-/*
- * USB general interrupt
+
+/**
+ * @brief USB interrupts 
+ * 
+ */
+
+/**
+ * @brief USB general interrupt
+ * 
  */
 void __attribute__((signal)) __vector_10(void) {
+
   // On reset, setup endpoint 0
   if (STS(UDINT) & (1 << EORSTI)) {
-    usb_endpoint0();
+    usb_enable_endpoint0();
   }
 
   STS(UDINT) = 0;
   
-  // NOTE Do nothing for a Start of Frame packet
+  // NOTE: Do nothing for a Start of Frame packet
 }
 
-
-/*
- * USB endpoint interrupt
+/**
+ * @brief USB endpoint interrupt
+ * 
  */
 void __attribute__((signal)) __vector_11(void) {
-  // NOTE Currently, only the RXSTPI interrupt is enabled,
+
+  // NOTE: Currently, only the RXSTPI interrupt is enabled,
   // so we will assume that that is the only reason
   // for this interrupt to be triggered (setup packets),
   // other than device endpoint interrupts.
@@ -36,18 +45,20 @@ void __attribute__((signal)) __vector_11(void) {
   packet.length |= STS(UEDATX) << 8;
 
   // Handshake any possible interrupts
+  // TODO: can we assume that only RXSTPI is interrupt?
   STS(UEINTX) &= ~((1 << RXSTPI) | (1 << RXOUTI) | (1 << TXINI));
 
   // Check if request is an interface
-  if ((packet.request_type | ~(USB_TYPE_CLASS | USB_RECIPIENT_INTERFACE)) == 0xFF) {
+  if ((packet.request_type |~(USB_TYPE_CLASS | USB_RECIPIENT_INTERFACE))
+    == 0xFF) {
     // Check if device is required to send data to host
-    // NOTE We will not send keyboard strokes here
+    // NOTE: We will not send keyboard strokes here in the interrupt
     if (packet.request_type & USB_TRANSFER_DEVICE_TO_HOST) {
       usb_bank_wait();
 
       switch (packet.request) {
       case USB_ENDPOINT_GET_REPORT: {
-        for (u8 i = 0; i < 8; i++) {
+        for (uint8_t i = 0; i < 8; i++) {
           STS(UEDATX) = 0;
         }
       } break;
@@ -64,7 +75,7 @@ void __attribute__((signal)) __vector_11(void) {
       
       STS(UEINTX) &= ~(1 << TXINI);
     } else {
-      // Since host to device requests are optional,
+      // NOTE: Since host to device requests are optional,
       // we will opt to not implement them
       usb_invalid_packet();
     }

@@ -1,38 +1,26 @@
+/**
+ * @brief Keyboard matrix and scanning
+ * 
+ */
+
 #include "keys.h"
 
-u8 g_keys[USB_HID_MAX_KEYS] = {0};
-
-/**
- * DESCRIPTION: Call this function to initalise the keyboard matrix.
- */
-void keyboard_init() {
-  // Set all as input (by default)
-  STS(DDRB) = 0;
-  STS(DDRD) = 0;
-  STS(DDRF) = 0;
-  STS(PORTB) = 0xff;
-  STS(PORTD) = 0xff;
-  STS(PORTF) = 0xff;
-
-  // Set outputs of matrix (rows)
-  STS(DDRB) |= 0x1f;
-}
-
+uint8_t g_keys[USB_HID_MAX_KEYS] = {0};
 
 typedef struct keyboard_column {
-  u8 pinput;
-  u8 index;
-  u8 scancode;
+  uint8_t pinput;
+  uint8_t index;
+  uint8_t scancode;
 } keyboard_column;
 
-
 typedef struct keyboard_row {
-  u8 poutput;
-  u8 index;
-  u8 scancolumns;
+  uint8_t poutput;
+  uint8_t index;
+  uint8_t scancolumns;
   keyboard_column column[15];
 } keyboard_row;
 
+// TODO: this is all wrong!! probably
 
 keyboard_row scanrows[] = {
   {
@@ -81,18 +69,36 @@ keyboard_row scanrows[] = {
   }
 };
 
+/**
+ * @brief Initalise the keyboard matrix
+ * 
+ */
+void keyboard_init() {
+  // Set all as input (by default)
+  STS(DDRB) = 0;
+  STS(DDRD) = 0;
+  STS(DDRF) = 0;
+  STS(PORTB) = 0xff;
+  STS(PORTD) = 0xff;
+  STS(PORTF) = 0xff;
+
+  // Set outputs of matrix (rows)
+  STS(DDRB) |= 0x1f;
+}
 
 /**
- * DESCRIPTION: Check for any key presses/releases
+ * @brief Check for any key presses/releases
+ * 
  */
 void keyboard_poll(void) {
+
   usb_reset_keys(g_keys);
 
-  for (u8 i = 0; i < sizeof_array(scanrows); i++) {
+  for (uint8_t i = 0; i < sizeof_array(scanrows); i++) {
     keyboard_row row = scanrows[i];
     STS(row.poutput) &= ~(1 << row.index);
 
-    for (u8 j = 0; j < row.scancolumns; j++) {
+    for (uint8_t j = 0; j < row.scancolumns; j++) {
       keyboard_column column = row.column[j];
       if (((~STS(column.pinput)) & (1 << column.index))) {
         usb_add_key(g_keys, column.scancode);

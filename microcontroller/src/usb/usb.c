@@ -1,12 +1,16 @@
+/**
+ * @brief USB initialisation
+ * 
+ */
 #include "usb.h"
 #include "descriptors.c"
 
-
-/*
- * Enable and setup USB (no endpoints, just
- * allow USB detection by host)
+/**
+ * @brief Enable and setup USB (no endpoints, just
+ *  allow USB detection by host)
  */
 void usb_enable(void) {
+
   CLI;
 
   // Power on USB pads regulator
@@ -35,11 +39,13 @@ void usb_enable(void) {
   SEI;
 }
 
-
-/*
- * Enable endpoint 0 (control endpoint, obligatory, as per specification).
+/**
+ * @brief Enable endpoint 0 (control endpoint, obligatory,
+ *   as per specification).
+ * 
  */
-void usb_endpoint0(void) {
+void usb_enable_endpoint0(void) {
+
   // Select endpoint 0
   STS(UENUM) = 0;
 
@@ -62,58 +68,61 @@ void usb_endpoint0(void) {
   STS(UEIENX) |= 1 << RXSTPE;
 }
 
-
-/*
- * Call this function to initalise USB in its entirety.
- * Later, interrupts will be triggered, in which
- * descriptors will be exchanged.
+/**
+ * @brief Call this function to initalise USB in its entirety.
+ *   Later, interrupts will be triggered, in which
+ *   descriptors will be exchanged
+ * 
  */
 void usb_init(void) {
+
   usb_enable();
 }
 
-
-/*
- * Call when an invalid packet has been sent by the host
+/**
+ * @brief Reply to invalid packet sent by the host
+ * 
  */
 void usb_invalid_packet(void) {
+
   STS(UECONX) |= (1 << STALLRQ) | (1 << EPEN);
 }
 
-
-/*
- * Call to stall execution until current bank is free
+/**
+ * @brief Stall execution until current bank is free
+ * 
  */
 void usb_bank_wait(void) {
+
   while (!(STS(UEINTX) & (1 << TXINI)));
 }
 
-
-/*
- * Parse SETUP descriptor request packets
+/**
+ * @brief Parse SETUP descriptor request packets
  */
 void usb_setup_descriptor(usb_setup_packet packet) {
-  u8 *data = 0;
-  u8 data_size = 0;
+
+  uint8_t *data = 0;
+  uint8_t data_size = 0;
 
   switch (packet.value) {
   case USB_DEVICE_DESCRIPTOR: {
-    data = (u8 *)&device_descriptor;
+    data = (uint8_t *)&device_descriptor;
     data_size = sizeof(usb_device_descriptor);
   } break;
 
   case USB_CONFIGURATION_DESCRIPTOR: {
-    data = (u8 *)&complete_descriptor;
+    data = (uint8_t *)&complete_descriptor;
     data_size = sizeof(usb_complete_descriptor);
   } break;
 
   case USB_HID_DESCRIPTOR: {
-    data = (u8 *)&complete_descriptor.hid_descriptor;
+    data = (uint8_t *)&complete_descriptor.hid_descriptor;
     data_size = sizeof(usb_hid_descriptor);
   } break;
 
   case USB_KEYBOARD_REPORT_DESCRIPTOR: {
-    data = (u8 *)&keyboard_report_descriptor;
+    data = (uint8_t *)&keyboard_report_descriptor;
     data_size = sizeof(keyboard_report_descriptor);
   } break;
 
@@ -129,12 +138,12 @@ void usb_setup_descriptor(usb_setup_packet packet) {
   while (data_size) {
     usb_bank_wait();
 
-    u8 transmit_size = data_size;
+    uint8_t transmit_size = data_size;
     if (transmit_size > 32) {
       transmit_size = 32;
     }
 
-    for (u8 i = 0; i < transmit_size; i++) {
+    for (uint8_t i = 0; i < transmit_size; i++) {
       STS(UEDATX) = *data++;
     }
 
@@ -144,11 +153,12 @@ void usb_setup_descriptor(usb_setup_packet packet) {
   }
 }
 
-
-/*
- * Parse SETUP set configuration packets
+/**
+ * @brief Parse SETUP set configuration packets
+ * 
  */
 void usb_setup_set_packet(usb_setup_packet packet) {
+
   STS(UEINTX) &= ~(1 << TXINI);
 
   STS(UENUM) = USB_KEYBOARD_ENDPOINT;
@@ -159,22 +169,24 @@ void usb_setup_set_packet(usb_setup_packet packet) {
   STS(UERST) = 0;
 }
 
-
-/*
- * Parse SETUP set address packets
+/**
+ * @brief Parse SETUP set address packets
+ * 
  */
 void usb_setup_set_address(usb_setup_packet packet) {
+
   STS(UEINTX) &= ~(1 << TXINI);
   usb_bank_wait();
 
   STS(UDADDR) = (1 << ADDEN) | packet.value;
 }
 
-
-/*
- * Parse SETUP get status packets
+/**
+ * @brief Parse SETUP get status packets
+ * 
  */
 void usb_setup_get_status(void) {
+
   usb_bank_wait();
 
   STS(UEDATX) = 0;
@@ -183,90 +195,4 @@ void usb_setup_get_status(void) {
   STS(UEINTX) &= ~(1 << TXINI);
 }
 
-
-/*
- * Send single key press
- */
-void usb_send_key(u8 key) {
-  STS(UENUM) = USB_KEYBOARD_ENDPOINT;
-  STS(UEDATX) = 0;
-  STS(UEDATX) = 0;
-  STS(UEDATX) = key;
-  STS(UEDATX) = 0;
-  STS(UEDATX) = 0;
-  STS(UEDATX) = 0;
-  STS(UEDATX) = 0;
-  STS(UEDATX) = 0;
-  STS(UEINTX) = 0b00111010;
-}
-
-
-/*
- * Checks whether a key is in the keylist
- */
-u8 usb_check_key(u8 keylist[USB_HID_MAX_KEYS], u8 key) {
-  for (u8 i = 0; i < USB_HID_MAX_KEYS; i++) {
-    if (keylist[i] == key) {
-      return i;
-    }
-  }
-  
-  return 0xFF;
-}
-
-
-/*
- * Send USB_HID_MAX_KEYS key presses
- */
-void usb_send_keys(u8 keylist[USB_HID_MAX_KEYS]) {
-  STS(UENUM) = USB_KEYBOARD_ENDPOINT;
-  STS(UEDATX) = 0;
-  STS(UEDATX) = 0;
-  for (u8 i = 0; i < USB_HID_MAX_KEYS; i++) {
-    STS(UEDATX) = keylist[i];
-  }
-  STS(UEINTX) = 0b00111010;
-}
-
-
-/*
- * Adds a key to the key list
- */
-u8 usb_add_key(u8 keylist[USB_HID_MAX_KEYS], u8 key) {
-  if (usb_check_key(keylist, key) != 0xFF) {
-    return 0xFF;
-  }
-
-  for (u8 i = 0; i < USB_HID_MAX_KEYS; i++) {
-    if (!keylist[i]) {
-      keylist[i] = key;
-      return i;
-    }
-  }
-
-  return 0xFF;
-}
-
-
-/**
- * DESCRIPTION: Removes a key from the key list
- */
-u8 usb_remove_key(u8 keylist[USB_HID_MAX_KEYS], u8 key) {
-  u8 index = usb_check_key(keylist, key);
-  if (index != 0xFF) {
-    keylist[index] = 0;
-  }
-
-  return index;
-}
-
-
-/**
- * DESCRIPTOION: Removes a key from the key list
- */
-void usb_reset_keys(u8 keylist[USB_HID_MAX_KEYS]) {
-  for (u8 i = 0; i < USB_HID_MAX_KEYS; i++) {
-    keylist[i] = 0;
-  }
-}
 #include "interrupt.c"
