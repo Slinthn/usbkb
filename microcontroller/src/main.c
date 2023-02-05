@@ -12,10 +12,10 @@ typedef unsigned short uint16_t;
 #include "pixel/pixel.c"
 #include "pixel/rgb/pixel_rgb.c"
 
-#include "usb/usb.c"
+//#include "usb/usb.c"
 
-#include "keyboard/usb_keyboard.c"
-#include "keyboard/keyboard.c"
+//#include "keyboard/usb_keyboard.c"
+//#include "keyboard/keyboard.c"
 
 /**
  * @brief Entrypoint for the ATMEGA32U4
@@ -23,15 +23,24 @@ typedef unsigned short uint16_t;
  */
 int main(void) {
 
-  keyboard_init();
-  usb_init();
+  //keyboard_init();
+  //usb_init();
 
   init_pixels_rgbwave();
 
-  while (1) {
-    keyboard_poll();
+  // TODO: temp DDR shits
+  STS(DDRF) |= 1 << 5;
+  STS(DDRF) &= ~(1 << 6);
 
-    update_pixels_rgbwave();
-    write_pixels_rgbwave();
+  STS(PORTF) &= ~(1 << 5);
+  STS(PORTF) |= (1 << 6);
+
+  while (1) {
+    //keyboard_poll();
+
+    if (STS(PINF) & (1 << 6)) {
+      update_pixels_rgbwave();
+      write_pixels_rgbwave();
+    }
   }
 }

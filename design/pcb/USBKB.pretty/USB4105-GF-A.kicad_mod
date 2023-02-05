@@ -10,6 +10,7 @@
     (effects (font (size 1 1) (thickness 0.15)))
     (tstamp 319226f3-3f65-4a76-9bf5-692472c5c870)
   )
+  (fp_rect (start -5 -1) (end 5 8) (layer "F.CrtYd") (width 0.05) (fill none) (tstamp 08988b62-33ac-4b2f-882a-0fc64e386627))
   (fp_rect (start -4.47 0.005) (end 4.47 7.355) (layer "F.Fab") (width 0.12) (fill none) (tstamp abab52b3-9b8c-44de-8a3d-4f9de6134d19))
   (pad "" thru_hole oval (at 4.32 0.575) (size 1 2.1) (drill oval 0.6 1.7) (layers *.Cu *.Mask) (tstamp 3c281a95-0e0c-48b0-ab99-ef9caf10314f))
   (pad "" thru_hole oval (at -4.32 4.755) (size 1 2.1) (drill oval 0.6 1.7) (layers *.Cu *.Mask) (tstamp 3f05630b-ed12-414f-a1e2-dba429867ffb))
@@ -29,4 +30,9 @@
   (pad "B6" smd rect (at 0.75 0) (size 0.3 1.15) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp 108c44ca-fd68-4489-81d6-f0e51c8a61c3))
   (pad "B7" smd rect (at -0.75 0) (size 0.3 1.15) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp 3bc161f8-05e5-47cf-bd46-19b2422a0427))
   (pad "B8" smd rect (at -1.75 0) (size 0.3 1.15) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp 409db7ae-de2a-45c1-8655-e3fadde40c9e))
+  (model "${KIPRJMOD}/models/USB4105-GF-A.step"
+    (offset (xyz 0 -4.8 -0.2))
+    (scale (xyz 1 1 1))
+    (rotate (xyz -90 0 0))
+  )
 )

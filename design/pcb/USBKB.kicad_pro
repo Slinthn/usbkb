@@ -345,9 +345,7 @@
     "pinned_footprint_libs": [
       "USBKB"
     ],
-    "pinned_symbol_libs": [
-      "USBKB"
-    ]
+    "pinned_symbol_libs": []
   },
   "meta": {
     "filename": "USBKB.kicad_pro",

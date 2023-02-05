@@ -58,4 +58,9 @@
   (pad "43" smd oval (at -2 -3.625 90) (size 1.15 0.3) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp 79c2eb30-77f9-40df-944e-0549102da0b7))
   (pad "44" smd oval (at -2.5 -3.625 90) (size 1.15 0.3) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp e49c2e40-2af1-4f55-8957-81a05778d8a7))
   (pad "45" smd roundrect (at 0 0) (size 5.4 5.4) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.03703703704) (tstamp c7da0506-5c52-4bb9-b730-5009fcee0535))
+  (model "${KIPRJMOD}/models/ATMEGA32U4-MU.step"
+    (offset (xyz 0 0 0))
+    (scale (xyz 1 1 1))
+    (rotate (xyz 0 0 0))
+  )
 )

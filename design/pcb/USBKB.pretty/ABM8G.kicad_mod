@@ -18,4 +18,9 @@
   (pad "2" smd rect (at 1.1 0.85) (size 1.4 1.2) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp c78efb20-aeeb-4c6a-9c39-efc9f5b2877d))
   (pad "3" smd rect (at 1.1 -0.85) (size 1.4 1.2) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp 0239213e-757e-4562-b46a-cf2c0b90069d))
   (pad "4" smd rect (at -1.1 -0.85) (size 1.4 1.2) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp 5f737b4d-91ea-446b-bc81-382a141eb21d))
+  (model "${KIPRJMOD}/models/ABM8G.step"
+    (offset (xyz 0 0 0))
+    (scale (xyz 1 1 1))
+    (rotate (xyz -90 0 0))
+  )
 )

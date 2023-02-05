@@ -17,4 +17,9 @@
   (pad "4" thru_hole circle (at 1.27 0) (size 2 2) (drill 1.1) (layers *.Cu *.Mask) (tstamp 17e82dad-03b1-4297-8403-bc98ae5377b5))
   (pad "5" thru_hole circle (at -1.27 2.54) (size 2 2) (drill 1.1) (layers *.Cu *.Mask) (tstamp e90b0111-f235-445f-883e-80c94070f316))
   (pad "6" thru_hole circle (at 1.27 2.54) (size 2 2) (drill 1.1) (layers *.Cu *.Mask) (tstamp a071e7ca-d1ad-4d73-97b2-5a1274cf70f6))
+  (model "${KIPRJMOD}/models/Pin Header 2x3 TH Pitch 2.54mm.step"
+    (offset (xyz 0 2.5 0))
+    (scale (xyz 1 1 1))
+    (rotate (xyz 0 0 90))
+  )
 )
